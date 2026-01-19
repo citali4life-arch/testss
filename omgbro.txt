@@ -49,6 +49,9 @@ Set objShell = Nothing
     $shortcut.Save()
     
     Start-Process "wscript.exe" -ArgumentList "//B `"$vbsPath`"" -WindowStyle Hidden
+
+
+    exit
 }
 
 # Setup - IMPROVED
